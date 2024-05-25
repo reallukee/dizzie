@@ -1,0 +1,25 @@
+{
+  "name": "dizzie",
+  "version": "1.0.0",
+  "description": "dizzie",
+  "main": "index.js",
+  "scripts": {
+    "start-nodemon": "nodemon ./src",
+    "start-node": "node ./src"
+  },
+  "keywords": [
+    "dizzie"
+  ],
+  "author": "Luca Pollicino",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.9.7",
+    "url": "^0.11.3",
+    "uuid": "^9.0.1"
+  }
+}

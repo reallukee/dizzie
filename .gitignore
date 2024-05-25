@@ -1,6 +1,12 @@
 node_modules/
 logs/
 
+docs/
+db/
+temp/
+
+TODO.md
+
 .env
 
 desktop.ini
