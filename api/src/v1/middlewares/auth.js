@@ -25,14 +25,14 @@ const secret = process.env.SECRET || "1234";    // Secret
 const authView = async (req, res, next) => {
     let token = req.headers.authorization || req.body.authorization;
 
-    if (token.split(" ").length > 1 && token.split(" ")[0] === "Bearer") {
-        token = token.split(" ")[1];
-    }
-
     if (!token) {
         return res.status(400).json(
             api.simpleResponse(req, 400, "Missing Token")
         );
+    }
+
+    if (token.split(" ").length > 1 && token.split(" ")[0] === "Bearer") {
+        token = token.split(" ")[1];
     }
 
     try {
@@ -54,14 +54,14 @@ const authView = async (req, res, next) => {
 const auth = async (req, res, next) => {
     let token = req.headers.authorization || req.body.authorization;
 
-    if (token.split(" ").length > 1 && token.split(" ")[0] === "Bearer") {
-        token = token.split(" ")[1];
-    }
-
     if (!token) {
         return res.status(400).json(
             api.simpleResponse(req, 400, "Missing Token")
         );
+    }
+
+    if (token.split(" ").length > 1 && token.split(" ")[0] === "Bearer") {
+        token = token.split(" ")[1];
     }
 
     try {
@@ -89,14 +89,14 @@ const auth = async (req, res, next) => {
 const authPlus = async (req, res, next) => {
     let token = req.headers.authorization || req.body.authorization;
 
-    if (token.split(" ").length > 1 && token.split(" ")[0] === "Bearer") {
-        token = token.split(" ")[1];
-    }
-
     if (!token) {
         return res.status(400).json(
             api.simpleResponse(req, 400, "Missing Token")
         );
+    }
+
+    if (token.split(" ").length > 1 && token.split(" ")[0] === "Bearer") {
+        token = token.split(" ")[1];
     }
 
     try {

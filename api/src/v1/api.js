@@ -58,12 +58,19 @@ const dataResponse = (req, status, message, data) => {
         status,
         message,
         data,
-        meta: {
-            count: 0,
-            total: 0,
-            next: null,
-            previous: null,
-        },
+    };
+};
+
+/**
+ * Get Meta Response
+ */
+const metaResponse = (req, status, message, data, meta) => {
+    return {
+        url: fullUrl(req),
+        status,
+        message,
+        data,
+        meta,
     };
 };
 
@@ -72,4 +79,5 @@ module.exports = {
     baseUrl,
     simpleResponse,
     dataResponse,
+    metaResponse,
 };

@@ -19,7 +19,6 @@ router.use(require("./middlewares/query"));     // Query
 router.use(require("./middlewares/log"));       // Log
 
 router.use("/v1", require("./routes/user"));    // User
-router.use("/v1", require("./routes/auth"));    // Auth
 
 router.use(require("./middlewares/error"));     // Error
 

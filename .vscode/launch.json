@@ -1,0 +1,56 @@
+{
+  "configurations": [
+    {
+      "name": "Dizzie API (Chrome)",
+      "request": "launch",
+      "type": "chrome",
+      "url": "http://localhost:4044",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Dizzie App (Chrome)",
+      "request": "launch",
+      "type": "chrome",
+      "url": "http://localhost:4040",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Dizzie API (Node)",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/api",
+      "runtimeArgs": [
+        "start"
+      ],
+      "runtimeExecutable": "npm",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "node"
+    },
+    {
+      "name": "Dizzie APP (Node)",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/app",
+      "runtimeArgs": [
+        "start"
+      ],
+      "runtimeExecutable": "npm",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "node"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Dizzie",
+      "configurations": [
+        "Dizzie API (Node)",
+        "Dizzie App (Chrome)",
+        "Dizzie API (Node)",
+        "Dizzie App (Node)"
+      ],
+      "stopAll": true
+    }
+  ]
+}
