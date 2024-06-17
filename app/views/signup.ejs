@@ -1,0 +1,65 @@
+<%- include("./_common/header.ejs", { title: "Sign In", }); -%>
+<%- include("./_common/navbar.ejs", { page: "SIGNIN", }); -%>
+
+<div class="container-fluid col-md-8 col-12 my-5">
+  <div class="row g-3">
+    <div class="offset-md-3 col-md-6 col-12">
+      <h1 class="display-4 fw-bold m-0">
+        Sign In
+      </h1>
+
+
+
+      <div class="my-3"></div>
+      
+      <form action="./signin" method="post" class="needs-validation" novalidate>
+        <div class="form-floating">
+          <input type="text" class="form-control" id="username" name="username" placeholder="Username" required />
+
+          <label for="username">Username</label>
+
+          <div class="valid-feedback">
+            Valid Username!
+          </div>
+
+          <div class="invalid-feedback">
+            Invalid Username!
+          </div>
+        </div>
+
+        <div class="my-4"></div>
+
+        <div class="form-floating">
+          <input type="password" class="form-control" id="password" name="password" placeholder="Password" required />
+
+          <label for="password">Password</label>
+
+          <div class="valid-feedback">
+            Valid Password!
+          </div>
+
+          <div class="invalid-feedback">
+            Invalid Password!
+          </div>
+
+        </div>
+
+        <div class="my-4"></div>
+
+        <button type="submit" class="btn btn-lg btn-primary w-100" id="submit" name="submit">
+          Sign In
+        </button>
+
+        <hr class="mt-4 mb-3" />
+
+        <p>Not Registered?</p>
+
+        <a href="./signup.php" class="btn btn-lg btn-outline-primary w-100">
+          Sign Up
+        </a>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include("./_common/footer.ejs"); -%>

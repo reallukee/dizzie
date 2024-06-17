@@ -1,0 +1,23 @@
+:root {
+    --primary: #A05ADC;
+    --secondary: #8232D2;
+    --tertiary: #A078C8;
+    --white: #EEEEEE;
+    --black: #111111;
+}
+
+.dizzie-primary {
+    color: var(--primary);
+}
+.dizzie-secondary {
+    color: var(--secondary);
+}
+.dizzie-tertiary {
+    color: var(--tertiary);
+}
+.dizzie-white {
+    color: var(--white);
+}
+.dizzie-black {
+    color: var(--black);
+}
