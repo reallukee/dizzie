@@ -1,10 +1,14 @@
 /**
  * Dizzie REST API
  *
+ * An Open-Source Playlist Service
+ *
  * https://github.com/reallukee/dizzie
  *
- * Author   : Luca Pollicino
- * License  : MIT
+ * Author       : Luca Pollicino
+ * Descrizione  : INDEX
+ * License      : MIT
+ * Versione     : 1.0.0
  */
 
 const express = require("express"); // Express

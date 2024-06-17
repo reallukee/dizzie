@@ -1,10 +1,16 @@
 /**
  * Dizzie REST API
  *
+ * An Open-Source Playlist Service
+ *
  * https://github.com/reallukee/dizzie
  *
- * Author   : Luca Pollicino
- * License  : MIT
+ * Author       : Luca Pollicino
+ * Descrizione  : USER
+ *                Metodi per la Gestione della Risorsa 'User'
+ *                e delle Risorse a Esso Collegate
+ * License      : MIT
+ * Versione     : 1.0.0
  */
 
 const express = require("express");     // Express
@@ -13,7 +19,7 @@ const common = require("../common");    // Common
 const db = require("../db");            // Database
 const api = require("../api");          // API
 
-const controller = require("../controllers/user");  // Controller
+const controller = require("../controllers/user");          // Controller
 
 const { authView } = require("../middlewares/auth");        // AuthView
 const { auth } = require("../middlewares/auth");            // Auth
@@ -32,13 +38,11 @@ router.post("/signup", async (req, res, next) => {
 
     if (!username || !password) {
         return res.status(400).json(
-            api.dataResponse(req, 400, "Invalid Body")
+            api.simpleResponse(req, 400, "Invalid Body")
         );
     }
 
-    const id = username;
-
-    const result = await controller.getOne(id)
+    const result = await controller.getOne(username, req)
         .catch(error => {
             throw error;
         });
@@ -54,8 +58,8 @@ router.post("/signup", async (req, res, next) => {
     }
 
     const data = {
-        username,
-        password,
+        username,   // Username Utente
+        password,   // Password Utente
     };
 
     await controller.signup(data)
@@ -63,9 +67,18 @@ router.post("/signup", async (req, res, next) => {
             throw error;
         });
 
-    return res.status(201).json(
-        api.simpleResponse(req, 201, "User Created")
-    );
+    const response = await controller.getOne(id)
+        .catch(error => {
+            throw error;
+        });
+
+    try {
+        return res.status(201).json(
+            api.simpleResponse(req, 201, "User Created", response)
+        );
+    } catch (error) {
+        throw error;
+    }
 });
 
 /**
@@ -77,13 +90,28 @@ router.post("/signin", async (req, res, next) => {
 
     if (!username || !password) {
         return res.status(400).json(
-            api.dataResponse(req, 400, "Invalid Body")
+            api.simpleResponse(req, 400, "Invalid Body")
         );
     }
 
+    const result = await controller.getOne(username, req)
+        .catch(error => {
+            throw error;
+        });
+    
+    try {
+        if (result) {
+            return res.status(409).json(
+                api.simpleResponse(req, 409, "User Already Exists")
+            );
+        }
+    } catch (error) {
+        throw error;
+    }
+
     const data = {
-        username,
-        password,
+        username,   // Username Utente
+        password,   // Password Utente
     };
 
     const response = await controller.signin(data)
@@ -91,15 +119,16 @@ router.post("/signin", async (req, res, next) => {
             throw error;
         });
 
-    if (!response) {
-        return res.status(401).json(
-            api.simpleResponse(req, 401, "Unauthorized")
-        );
-    }
+    try {
+        const status = response ? 200 : 401;
+        const message = status === 200 ? "OK" : "Unauthorized";
 
-    return res.status(200).json(
-        api.dataResponse(req, 200, "OK", response)
-    );
+        return res.status(status).json(
+            api.simpleResponse(req, status, message, response)
+        );
+    } catch (error) {
+        throw error;
+    }
 });
 
 
@@ -118,7 +147,7 @@ router.get("/users", authView, pagination, async (req, res, next) => {
         const message = status === 200 ? "OK" : "No Users";
 
         return res.status(200).json(
-            api.dataResponse(req, status, message, response)
+            api.simpleResponse(req, status, message, response)
         );
     } catch (error) {
         throw error;
@@ -129,19 +158,19 @@ router.get("/users", authView, pagination, async (req, res, next) => {
  * Get One User
  */
 router.get("/users/:id", authView, async (req, res, next) => {
-    const id = req.params.id;
+    const id = req.params.id;   // Username Utente
 
     const response = await controller.getOne(id)
         .catch(error => {
             throw error;
         });
-    
+
     try {
         const status = response ? 200 : 404;
         const message = status === 200 ? "OK" : "User Not Found";
 
-        return res.status(200).json(
-            api.dataResponse(req, status, message, response)
+        return res.status(status).json(
+            api.simpleResponse(req, status, message, response)
         );
     } catch (error) {
         throw error;
@@ -158,13 +187,14 @@ router.post("/users", authPlus, async (req, res, next) => {
 
     if (!username || !password || !role) {
         return res.status(400).json(
-            api.dataResponse(req, 400, "Invalid Body")
+            api.simpleResponse(req, 400, "Invalid Body")
         );
     }
 
-    const id = username;
-
-    const result = await controller.getOne(id)
+    //
+    // Controllo se l'Utente Esiste
+    //
+    const result = await controller.getOne(username, req)
         .catch(error => {
             throw error;
         });
@@ -179,10 +209,13 @@ router.post("/users", authPlus, async (req, res, next) => {
         throw error;
     }
 
+    //
+    // Creo l'Utente
+    //
     const data = {
-        username,
-        password,
-        role,
+        username,   // Username Utente
+        password,   // Password Utente
+        role,       // Ruolo Utente
     };
 
     await controller.create(data)
@@ -190,18 +223,33 @@ router.post("/users", authPlus, async (req, res, next) => {
             throw error;
         });
 
-    return res.status(201).json(
-        api.simpleResponse(req, 201, "User Created")
-    );
+    //
+    // Restituisco l'Utente
+    //
+    const response = await controller.getOne(username, req)
+        .catch(error => {
+            throw error;
+        });
+
+    try {
+        return res.status(201).json(
+            api.simpleResponse(req, 201, "User Created", response)
+        );
+    } catch (error) {
+        throw error;
+    }
 });
 
 /**
  * Update User
  */
 router.put("/users/:id", authPlus, async (req, res, next) => {
-    const id = req.params.id;
+    const id = req.params.id;   // Username Utente
 
-    const result = await controller.getOne(id)
+    //
+    // Controllo se l'Utente Esiste
+    //
+    const result = await controller.getOne(id, req)
         .catch(error => {
             throw error;
         });
@@ -216,20 +264,21 @@ router.put("/users/:id", authPlus, async (req, res, next) => {
         throw error;
     }
 
-    const username = req.body.username || result.username;
+    //
+    // Modifico l'Utente
+    //
     const password = req.body.password || result.password;
     const role = req.body.role || result.role;
 
-    if (!username || !password || !role) {
+    if (!password || !role) {
         return res.status(400).json(
-            api.dataResponse(req, 400, "Invalid Body")
+            api.simpleResponse(req, 400, "Invalid Body")
         );
     }
 
     const data = {
-        username,
-        password,
-        role,
+        password,   // Password Utente
+        role,       // Ruolo Utente
     };
 
     await controller.update(id, data)
@@ -237,24 +286,36 @@ router.put("/users/:id", authPlus, async (req, res, next) => {
             throw error;
         });
 
-    return res.status(200).json(
-        api.simpleResponse(req, 200, "User Updated")
-    );
+    //
+    // Restituisco l'Utente
+    //
+    const response = await controller.getOne(id, req)
+        .catch(error => {
+            throw error;
+        });
+
+    try {
+        return res.status(200).json(
+            api.simpleResponse(req, 200, "User Updated", response)
+        );
+    } catch (error) {
+        throw error;
+    }
 });
 
 /**
  * Delete User
  */
 router.delete("/users/:id", authPlus, async (req, res, next) => {
-    const id = req.params.id;
+    const id = req.params.id;   // Username Utente
 
-    const result = controller.getOne(id)
+    const response = controller.getOne(id, req)
         .catch(error => {
             throw error;
         });
 
     try {
-        if (!result) {
+        if (!response) {
             return res.status(404).json(
                 api.simpleResponse(req, 404, "User Not Found")
             );
@@ -268,10 +329,12 @@ router.delete("/users/:id", authPlus, async (req, res, next) => {
             throw error;
         });
 
-    return res.status(200).json(
-        api.simpleResponse(req, 204, "User Deleted")
+    return res.status(204).json(
+        api.simpleResponse(req, 204, "User Deleted", response)
     );
 });
+
+
 
 /**
  * Get Me
@@ -289,14 +352,12 @@ router.get("/me", authView, async (req, res, next) => {
         const message = status === 200 ? "OK" : "User Not Found";
 
         return res.status(200).json(
-            api.dataResponse(req, status, message, response)
+            api.simpleResponse(req, status, message, response)
         );
     } catch (error) {
         throw error;
     }
 });
-
-
 
 /**
  * Update Me
@@ -319,18 +380,16 @@ router.put("/me", auth, async (req, res, next) => {
         throw error;
     }
 
-    const username = req.body.username || result.username;
     const password = req.body.password || result.password;
     const role = result.role;
 
-    if (!username || !password || !role) {
+    if (!password || !role) {
         return res.status(400).json(
-            api.dataResponse(req, 400, "Invalid Body")
+            api.simpleResponse(req, 400, "Invalid Body")
         );
     }
 
     const data = {
-        username,
         password,
         role,
     };
@@ -340,9 +399,18 @@ router.put("/me", auth, async (req, res, next) => {
             throw error;
         });
 
-    return res.status(200).json(
-        api.simpleResponse(req, 200, "User Updated")
-    );
+    const response = await controller.getOne(id)
+        .catch(error => {
+            throw error;
+        });
+
+    try {
+        return res.status(200).json(
+            api.simpleResponse(req, 200, "User Updated", response)
+        );
+    } catch (error) {
+        throw error;
+    }
 });
 
 /**
@@ -351,13 +419,13 @@ router.put("/me", auth, async (req, res, next) => {
 router.delete("/me", auth, async (req, res, next) => {
     const id = res.locals.payload.username;
 
-    const result = controller.getOne(id)
+    const response = controller.getOne(id)
         .catch(error => {
             throw error;
         });
 
     try {
-        if (!result) {
+        if (!response) {
             return res.status(404).json(
                 api.simpleResponse(req, 404, "User Not Found")
             );
@@ -372,7 +440,7 @@ router.delete("/me", auth, async (req, res, next) => {
         });
 
     return res.status(200).json(
-        api.simpleResponse(req, 204, "User Deleted")
+        api.simpleResponse(req, 204, "User Deleted", response)
     );
 });
 

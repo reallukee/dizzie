@@ -1,10 +1,16 @@
 /**
  * Dizzie REST API
  *
+ * An Open-Source Playlist Service
+ *
  * https://github.com/reallukee/dizzie
  *
- * Author   : Luca Pollicino
- * License  : MIT
+ * Author       : Luca Pollicino
+ * Descrizione  : USER
+ *                Metodi per la Gestione della Risorsa 'User'
+ *                e delle Risorse a Esso Collegate
+ * License      : MIT
+ * Versione     : 1.0.0
  */
 
 const jwt = require("jsonwebtoken");    // JsonWebToken
@@ -21,11 +27,12 @@ const secret = process.env.SECRET || "1234";    // Secret
 
 /**
  * Sign Up
+ * @param {object} data User Data
  */
 const signup = async (data) => {
     const {
-        username,
-        password,
+        username,   // Username Utente
+        password,   // Password Utente
     } = data;
 
     const sql =
@@ -35,8 +42,8 @@ const signup = async (data) => {
             (?, ?, "user", CURRENT_TIMESTAMP)`;
 
     const params = [
-        username,
-        password,
+        username,   // Username Utente
+        password,   // Password Utente
     ];
 
     await db.pool.execute(sql, params)
@@ -47,11 +54,12 @@ const signup = async (data) => {
 
 /**
  * Sign In
+ * @param {object} data User Data
  */
 const signin = async (data) => {
     const {
-        username,
-        password,
+        username,   // Username Utente
+        password,   // Password Utente
     } = data;
 
     const sql =
@@ -65,8 +73,8 @@ const signin = async (data) => {
             u.password=?`;
 
     const params = [
-        username,
-        password,
+        username,   // Username Utente
+        password,   // Password Utente
     ];
 
     const result = await db.pool.execute(sql, params)
@@ -99,6 +107,8 @@ const signin = async (data) => {
 
 /**
  * Get All Users
+ * @param {object} req Request
+ * @returns All Users
  */
 const getAll = async (req) => {
     const username = req.query.username || "";
@@ -108,21 +118,22 @@ const getAll = async (req) => {
 
     const sql =
         `SELECT
-            u.*
+            u.*,
+            CONCAT('${api.baseUrl(req)}/users/', u.id) AS endpoint
         FROM
             user u
         WHERE
-            username LIKE ?
+            u.username LIKE ?
         AND
-            role LIKE ?
+            u.role LIKE ?
         LIMIT ?
         OFFSET ?`;
 
     const params = [
-        `%${username}%`,
-        `%${role}%`,
-        limit,
-        offset,
+        `%${username}%`,    // Filtro Username Utente
+        `%${role}%`,        // Filtro Ruolo Utente
+        limit,              // Limit
+        offset,             // Offset
     ];
 
     const result = await db.pool.execute(sql, params)
@@ -130,7 +141,7 @@ const getAll = async (req) => {
             throw error;
         });
 
-    if (!result[0]) {
+    if (!result[0] || result[0].length === 0) {
         return null;
     }
 
@@ -139,8 +150,11 @@ const getAll = async (req) => {
 
 /**
  * Get One User
+ * @param {string} id User Id
+ * @param {object} req Request
+ * @returns One User
  */
-const getOne = async (id) => {
+const getOne = async (id, req) => {
     const sql =
         `SELECT
             u.*
@@ -150,7 +164,7 @@ const getOne = async (id) => {
             u.username=?`;
 
     const parmas = [
-        id,
+        id, // Username Utente
     ];
 
     const result = await db.pool.execute(sql, parmas)
@@ -167,12 +181,13 @@ const getOne = async (id) => {
 
 /**
  * Create User
+ * @param {object} data User Data
  */
 const create = async (data) => {
     const {
-        username,
-        password,
-        role,
+        username,   // Username Utente
+        password,   // Password Utente
+        role,       // Ruolo Utente
     } = data;
 
     const sql =
@@ -182,9 +197,9 @@ const create = async (data) => {
             (?, ?, ?, CURRENT_TIMESTAMP)`;
 
     const params = [
-        username,
-        password,
-        role,
+        username,   // Username Utente
+        password,   // Password Utente
+        role,       // Ruolo Utente
     ];
 
     await db.pool.execute(sql, params)
@@ -195,11 +210,13 @@ const create = async (data) => {
 
 /**
  * Update User
+ * @param {string} id User Id
+ * @param {object} data User Data
  */
 const update = async (id, data) => {
     const {
-        password,
-        role,
+        password,   // Password Utente
+        role,       // Ruolo Utente
     } = data;
 
     const sql =
@@ -212,9 +229,9 @@ const update = async (id, data) => {
             u.username=?`;
 
     const params = [
-        password,
-        role,
-        id,
+        password,   // Password Utente
+        role,       // Ruolo Utente
+        id,         // Username Utente
     ];
 
     await db.pool.execute(sql, params)
@@ -225,6 +242,7 @@ const update = async (id, data) => {
 
 /**
  * Remove User
+ * @param {string} id User Id
  */
 const remove = async (id) => {
     const sql =
@@ -234,7 +252,7 @@ const remove = async (id) => {
             u.username=?`;
 
     const parmas = [
-        id,
+        id, // Username Utente
     ];
 
     await db.pool.execute(sql, parmas)

@@ -1,10 +1,14 @@
 /**
  * Dizzie REST API
  *
+ * An Open-Source Playlist Service
+ *
  * https://github.com/reallukee/dizzie
  *
- * Author   : Luca Pollicino
- * License  : MIT
+ * Author       : Luca Pollicino
+ * Descrizione  : API
+ * License      : MIT
+ * Versione     : 1.0.0
  */
 
 const url = require("url");         // URL
@@ -16,6 +20,8 @@ dotenv.config();
 
 /**
  * Get Full Url
+ * @param {object} req Request
+ * @returns Full Url
  */
 const fullUrl = (req) => {
     return url.format({
@@ -28,6 +34,8 @@ const fullUrl = (req) => {
 
 /**
  * Get Base Url
+ * @param {object} req Request
+ * @returns Base Url
  */
 const baseUrl = (req) => {
     return url.format({
@@ -41,18 +49,7 @@ const baseUrl = (req) => {
 /**
  * Get Simple Response
  */
-const simpleResponse = (req, status, message) => {
-    return {
-        url: fullUrl(req),
-        status,
-        message,
-    };
-};
-
-/**
- * Get Data Response
- */
-const dataResponse = (req, status, message, data) => {
+const simpleResponse = (req, status, message, data) => {
     return {
         url: fullUrl(req),
         status,
@@ -62,15 +59,14 @@ const dataResponse = (req, status, message, data) => {
 };
 
 /**
- * Get Meta Response
+ * Get Full Response
  */
-const metaResponse = (req, status, message, data, meta) => {
+const fullResponse = (req, status, message, data) => {
     return {
         url: fullUrl(req),
         status,
         message,
         data,
-        meta,
     };
 };
 
@@ -78,6 +74,5 @@ module.exports = {
     fullUrl,
     baseUrl,
     simpleResponse,
-    dataResponse,
-    metaResponse,
+    fullResponse,
 };
