@@ -6,10 +6,12 @@
  * https://github.com/reallukee/dizzie
  *
  * Author       : Luca Pollicino
+ *                (https://github.com/reallukee)
  * Descrizione  : TRACK
  *                Metodi per la Gestione della Risorsa 'Track'
  *                e delle Risorse a Esso Collegate
  * License      : MIT
+ *                (https://opensource.org/license/mit)
  * Versione     : 1.0.0
  */
 
@@ -191,188 +193,10 @@ const remove = async (id) => {
         });
 };
 
-
-
-/**
- * Create Track Album
- * @param {string} id Track Id
- * @param {object} data Track Album Data
- */
-const createAlbum = async (id, data) => {
-    const {
-        album,  // Id Album
-    } = data;
-
-    const sql =
-        `INSERT INTO
-            track_album
-        VALUES
-            (?, ?)`;
-
-    const params = [
-        id,     // Id Traccia
-        album,  // Id Album
-    ];
-
-    await db.pool.execute(sql, params)
-        .catch(error => {
-            throw error;
-        });
-};
-
-/**
- * Update Track Album
- * @param {string} id Track Id
- * @param {string} album Album Id
- * @param {object} data Album Data
- */
-const updateAlbum = async (id, album, data) => {
-    const {
-
-    } = data;
-
-    const sql =
-        `UPDATE
-            track_album ta
-        SET
-
-        WHERE
-            ta.track=?
-        AND
-            ta.album=?`;
-
-    const params = [
-        id,     // Id Track
-        album,  // Id Album
-    ];
-
-    await db.pool.execute(sql, params)
-        .catch(error => {
-            throw error;
-        });
-};
-
-/**
- * Remove Track Album
- * @param {string} id Track Id
- * @param {string} album Album Id
- */
-const removeAlbum = async (id, album) => {
-    const sql =
-        `DELETE FROM
-            track_album ta
-        WHERE
-            ta.track=?
-        AND
-            ta.album=?`;
-
-    const params = [
-        id,     // Id Traccia
-        album,  // Id Album
-    ];
-
-    await db.pool.execute(sql, params)
-        .catch(error => {
-            throw error;
-        });
-};
-
-
-
-/**
- * Create Track Artist
- * @param {string} id Track Id
- * @param {object} data Track Artist Data
- */
-const createArtist = async (id, data) => {
-    const {
-        artist, // Id Artista
-    } = data;
-
-    const sql =
-        `INSERT INTO
-            track_artist
-        VALUES
-            (?, ?)`;
-
-    const params = [
-        id,     // Id Track
-        artist, // Id Artista
-    ];
-
-    await db.pool.execute(sql, params)
-        .catch(error => {
-            throw error;
-        });
-};
-
-/**
- * Update Track Artist
- * @param {string} id Track Id
- * @param {string} track Artist Id
- * @param {object} data Artist Data
- */
-const updateArtist = async (id, artist, data) => {
-    const {
-
-    } = data;
-
-    const sql =
-        `UPDATE
-            track_artist ta
-        SET
-
-        WHERE
-            ta.track=?
-        AND
-            ta.artist=?`;
-
-    const params = {
-        id,     // Id Traccia
-        artist, // Id Artista
-    };
-
-    await db.pool.execute(sql, params)
-        .catch(error => {
-            throw error;
-        });
-};
-
-/**
- * Remove Track Artist
- * @param {string} id Track Id
- * @param {string} artist Artist Id
- */
-const removeArtist = async (id, artist) => {
-    const sql =
-        `DELETE FROM
-            track_artist ta
-        WHERE
-            ta.track=?
-        AND
-            ta.artist=?`;
-
-    const params = [
-        id,     // Id Traccia
-        artist, // Id Artista
-    ];
-
-    await db.pool.execute(sql, params)
-        .catch(error => {
-            throw error;
-        });
-};
-
 module.exports = {
     getAll,
     getOne,
     create,
     update,
     remove,
-    createAlbum,
-    updateAlbum,
-    removeAlbum,
-    createArtist,
-    updateArtist,
-    removeArtist,
 };

@@ -6,8 +6,10 @@
  * https://github.com/reallukee/dizzie
  *
  * Author       : Luca Pollicino
+ *                (https://github.com/reallukee)
  * Descrizione  : DB
  * License      : MIT
+ *                (https://opensource.org/license/mit)
  * Versione     : 1.0.0
  */
 

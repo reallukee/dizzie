@@ -5,14 +5,12 @@
   <div class="row g-3">
     <div class="offset-md-3 col-md-6 col-12">
       <h1 class="display-4 fw-bold m-0">
-        Sign In
+        Sign Up
       </h1>
 
+      <div class="my-4"></div>
 
-
-      <div class="my-3"></div>
-      
-      <form action="./signin" method="post" class="needs-validation" novalidate>
+      <form action="/signup" method="post" class="needs-validation" novalidate>
         <div class="form-floating">
           <input type="text" class="form-control" id="username" name="username" placeholder="Username" required />
 
@@ -41,21 +39,20 @@
           <div class="invalid-feedback">
             Invalid Password!
           </div>
-
         </div>
 
         <div class="my-4"></div>
 
         <button type="submit" class="btn btn-lg btn-primary w-100" id="submit" name="submit">
-          Sign In
+          Sign Up
         </button>
 
         <hr class="mt-4 mb-3" />
 
-        <p>Not Registered?</p>
+        <p>Registered?</p>
 
-        <a href="./signup.php" class="btn btn-lg btn-outline-primary w-100">
-          Sign Up
+        <a href="/signin" class="btn btn-lg btn-outline-primary w-100">
+          Sign In
         </a>
       </form>
     </div>

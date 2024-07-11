@@ -20,14 +20,16 @@ module.exports = {
         guest: "guest",
         test: "test",
     },
-    visibility: {
-        private: "private",
-        hidden: "hidden",
-        public: "public",
-    },
     playlist: {
-        user: "user",
-        default: "default",
-        system: "system",
+        visibility: {
+            private: "private",
+            hidden: "hidden",
+            public: "public",
+        },
+        type: {
+            user: "user",
+            default: "default",
+            system: "system",
+        },
     },
 };

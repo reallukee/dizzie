@@ -23,7 +23,6 @@ const secret = process.env.SECRET || "1234";    // Secret
  * Auth View
  */
 const authView = async (req, res, next) => {
-    return next();
     let token = req.headers.authorization || req.body.authorization;
 
     if (!token) {
@@ -53,7 +52,6 @@ const authView = async (req, res, next) => {
  * Auth
  */
 const auth = async (req, res, next) => {
-    return next();
     let token = req.headers.authorization || req.body.authorization;
 
     if (!token) {
@@ -89,7 +87,6 @@ const auth = async (req, res, next) => {
  * Auth Plus
  */
 const authPlus = async (req, res, next) => {
-    return next();
     let token = req.headers.authorization || req.body.authorization;
 
     if (!token) {

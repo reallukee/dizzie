@@ -6,10 +6,12 @@
  * https://github.com/reallukee/dizzie
  *
  * Author       : Luca Pollicino
+ *                (https://github.com/reallukee)
  * Descrizione  : USER
  *                Metodi per la Gestione della Risorsa 'User'
  *                e delle Risorse a Esso Collegate
  * License      : MIT
+ *                (https://opensource.org/license/mit)
  * Versione     : 1.0.0
  */
 
@@ -37,9 +39,9 @@ const signup = async (data) => {
 
     const sql =
        `INSERT INTO
-            user
+            user (username, password)
         VALUES
-            (?, ?, "user", CURRENT_TIMESTAMP)`;
+            (?, ?)`;
 
     const params = [
         username,   // Username Utente
@@ -87,9 +89,9 @@ const signin = async (data) => {
     }
 
     const payload = {
-        username,
-        role: result[0][0].role,
-        version: 1,
+        username,                   // Username Utente
+        role: result[0][0].role,    // Ruolo Utente
+        version: common.version,    // Versione API
     };
 
     const options = {
@@ -99,9 +101,9 @@ const signin = async (data) => {
     const token = jwt.sign(payload, secret, options);
 
     return {
-        token,
-        role: result[0][0].role,
-        version: 1,
+        token,                      // Token
+        role: result[0][0].role,    // Ruolo Utente
+        version: common.version,    // Versione API
     };
 };
 
@@ -119,7 +121,7 @@ const getAll = async (req) => {
     const sql =
         `SELECT
             u.*,
-            CONCAT('${api.baseUrl(req)}/users/', u.id) AS endpoint
+            CONCAT('${api.baseUrl(req)}/users/', u.username) AS endpoint
         FROM
             user u
         WHERE
@@ -150,7 +152,7 @@ const getAll = async (req) => {
 
 /**
  * Get One User
- * @param {string} id User Id
+ * @param {string} id User Username
  * @param {object} req Request
  * @returns One User
  */
@@ -188,18 +190,33 @@ const create = async (data) => {
         username,   // Username Utente
         password,   // Password Utente
         role,       // Ruolo Utente
+        name,       // Nome Utente
+        surname,    // Cognome Utente
+        bio,        // Biografia Utente
     } = data;
+
+    // * username
+    // * password
+    // * role
+    // * name
+    // * surname
+    // * bio
+    // * createdOn
+    // * updatedOn
 
     const sql =
        `INSERT INTO
             user
         VALUES
-            (?, ?, ?, CURRENT_TIMESTAMP)`;
+            (?, ?, ?, ?, ?, ?, DEFAULT, DEFAULT)`;
 
     const params = [
         username,   // Username Utente
         password,   // Password Utente
         role,       // Ruolo Utente
+        name,       // Nome Utente
+        surname,    // Cognome Utente
+        bio,        // Biografia Utente
     ];
 
     await db.pool.execute(sql, params)
@@ -210,13 +227,16 @@ const create = async (data) => {
 
 /**
  * Update User
- * @param {string} id User Id
+ * @param {string} id User Username
  * @param {object} data User Data
  */
 const update = async (id, data) => {
     const {
         password,   // Password Utente
         role,       // Ruolo Utente
+        name,       // Nome Utente
+        surname,    // Cognome Utente
+        bio,        // Biografia Utente
     } = data;
 
     const sql =
@@ -224,13 +244,20 @@ const update = async (id, data) => {
             user u
         SET
             u.password=?,
-            u.role=?
+            u.role=?,
+            u.name=?,
+            u.surname=?,
+            u.bio=?,
+            u.updatedOn=CURRENT_TIMESTAMP
         WHERE
             u.username=?`;
 
     const params = [
         password,   // Password Utente
         role,       // Ruolo Utente
+        name,       // Nome Utente
+        surname,    // Cognome Utente
+        bio,        // Biografia Utente
         id,         // Username Utente
     ];
 
@@ -242,7 +269,7 @@ const update = async (id, data) => {
 
 /**
  * Remove User
- * @param {string} id User Id
+ * @param {string} id User Username
  */
 const remove = async (id) => {
     const sql =

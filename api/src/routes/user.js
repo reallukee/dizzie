@@ -6,10 +6,12 @@
  * https://github.com/reallukee/dizzie
  *
  * Author       : Luca Pollicino
+ *                (https://github.com/reallukee)
  * Descrizione  : USER
  *                Metodi per la Gestione della Risorsa 'User'
  *                e delle Risorse a Esso Collegate
  * License      : MIT
+ *                (https://opensource.org/license/mit)
  * Versione     : 1.0.0
  */
 
@@ -36,12 +38,14 @@ router.post("/signup", async (req, res, next) => {
     const username = req.body.username || null;
     const password = req.body.password || null;
 
+    // Controllo i Campi del Body
     if (!username || !password) {
         return res.status(400).json(
             api.simpleResponse(req, 400, "Invalid Body")
         );
     }
 
+    // Controllo se l'Utente Esiste
     const result = await controller.getOne(username, req)
         .catch(error => {
             throw error;
@@ -62,12 +66,13 @@ router.post("/signup", async (req, res, next) => {
         password,   // Password Utente
     };
 
+    // Sign Up
     await controller.signup(data)
         .catch(error => {
             throw error;
         });
 
-    const response = await controller.getOne(id)
+    const response = await controller.getOne(username)
         .catch(error => {
             throw error;
         });
@@ -88,21 +93,23 @@ router.post("/signin", async (req, res, next) => {
     const username = req.body.username || null;
     const password = req.body.password || null;
 
+    // Controllo i Campi del Body
     if (!username || !password) {
         return res.status(400).json(
             api.simpleResponse(req, 400, "Invalid Body")
         );
     }
 
+    // Controllo se l'Utente Esiste
     const result = await controller.getOne(username, req)
         .catch(error => {
             throw error;
         });
     
     try {
-        if (result) {
-            return res.status(409).json(
-                api.simpleResponse(req, 409, "User Already Exists")
+        if (!result) {
+            return res.status(404).json(
+                api.simpleResponse(req, 404, "User Not Exists")
             );
         }
     } catch (error) {
@@ -114,6 +121,7 @@ router.post("/signin", async (req, res, next) => {
         password,   // Password Utente
     };
 
+    // Sign In
     const response = await controller.signin(data)
         .catch(error => {
             throw error;
@@ -160,6 +168,7 @@ router.get("/users", authView, pagination, async (req, res, next) => {
 router.get("/users/:id", authView, async (req, res, next) => {
     const id = req.params.id;   // Username Utente
 
+    // Restituisco l'Utente
     const response = await controller.getOne(id)
         .catch(error => {
             throw error;
@@ -184,16 +193,18 @@ router.post("/users", authPlus, async (req, res, next) => {
     const username = req.body.username || null;
     const password = req.body.password || null;
     const role = req.body.role || null;
+    const name = req.body.name || null;
+    const surname = req.body.surname || null;
+    const bio = req.body.bio || null;
 
+    // Controllo i Campi del Body
     if (!username || !password || !role) {
         return res.status(400).json(
             api.simpleResponse(req, 400, "Invalid Body")
         );
     }
 
-    //
     // Controllo se l'Utente Esiste
-    //
     const result = await controller.getOne(username, req)
         .catch(error => {
             throw error;
@@ -209,13 +220,14 @@ router.post("/users", authPlus, async (req, res, next) => {
         throw error;
     }
 
-    //
     // Creo l'Utente
-    //
     const data = {
         username,   // Username Utente
         password,   // Password Utente
         role,       // Ruolo Utente
+        name,       // Nome Utente
+        surname,    // Cognome Utente
+        bio,        // Biografia Utente
     };
 
     await controller.create(data)
@@ -223,9 +235,7 @@ router.post("/users", authPlus, async (req, res, next) => {
             throw error;
         });
 
-    //
     // Restituisco l'Utente
-    //
     const response = await controller.getOne(username, req)
         .catch(error => {
             throw error;
@@ -246,9 +256,7 @@ router.post("/users", authPlus, async (req, res, next) => {
 router.put("/users/:id", authPlus, async (req, res, next) => {
     const id = req.params.id;   // Username Utente
 
-    //
     // Controllo se l'Utente Esiste
-    //
     const result = await controller.getOne(id, req)
         .catch(error => {
             throw error;
@@ -264,12 +272,14 @@ router.put("/users/:id", authPlus, async (req, res, next) => {
         throw error;
     }
 
-    //
     // Modifico l'Utente
-    //
     const password = req.body.password || result.password;
     const role = req.body.role || result.role;
+    const name = req.body.name || result.name;
+    const surname = req.body.surname || result.surname;
+    const bio = req.body.bio || result.bio;
 
+    // Controllo i Campi del Body
     if (!password || !role) {
         return res.status(400).json(
             api.simpleResponse(req, 400, "Invalid Body")
@@ -279,6 +289,9 @@ router.put("/users/:id", authPlus, async (req, res, next) => {
     const data = {
         password,   // Password Utente
         role,       // Ruolo Utente
+        name,       // Nome Utente
+        surname,    // Cognome Utente
+        bio,        // Biografia Utente
     };
 
     await controller.update(id, data)
@@ -286,9 +299,7 @@ router.put("/users/:id", authPlus, async (req, res, next) => {
             throw error;
         });
 
-    //
     // Restituisco l'Utente
-    //
     const response = await controller.getOne(id, req)
         .catch(error => {
             throw error;
@@ -309,6 +320,7 @@ router.put("/users/:id", authPlus, async (req, res, next) => {
 router.delete("/users/:id", authPlus, async (req, res, next) => {
     const id = req.params.id;   // Username Utente
 
+    // Controllo se l'Utente Esiste
     const response = controller.getOne(id, req)
         .catch(error => {
             throw error;
@@ -324,6 +336,7 @@ router.delete("/users/:id", authPlus, async (req, res, next) => {
         throw error;
     }
 
+    // Elimino l'Utente
     await controller.remove(id)
         .catch(error => {
             throw error;
@@ -340,8 +353,9 @@ router.delete("/users/:id", authPlus, async (req, res, next) => {
  * Get Me
  */
 router.get("/me", authView, async (req, res, next) => {
-    const id = res.locals.payload.username;
+    const id = res.locals.payload.username; // Username Utente
 
+    // Restituisco l'Utente
     const response = await controller.getOne(id)
         .catch(error => {
             throw error;
@@ -363,8 +377,9 @@ router.get("/me", authView, async (req, res, next) => {
  * Update Me
  */
 router.put("/me", auth, async (req, res, next) => {
-    const id = res.locals.payload.username;
+    const id = res.locals.payload.username; // Username Utente
 
+    // Controllo se l'Utente Esiste
     const result = await controller.getOne(id)
         .catch(error => {
             throw error;
@@ -380,9 +395,14 @@ router.put("/me", auth, async (req, res, next) => {
         throw error;
     }
 
+    // Modifico l'Utente
     const password = req.body.password || result.password;
-    const role = result.role;
+    const role = req.body.role || result.role;
+    const name = req.body.name || result.name;
+    const surname = req.body.surname || result.surname;
+    const bio = req.body.bio || result.bio;
 
+    // Controllo i Campi del Body
     if (!password || !role) {
         return res.status(400).json(
             api.simpleResponse(req, 400, "Invalid Body")
@@ -390,8 +410,11 @@ router.put("/me", auth, async (req, res, next) => {
     }
 
     const data = {
-        password,
-        role,
+        password,   // Password Utente
+        role,       // Ruolo Utente
+        name,       // Nome Utente
+        surname,    // Cognome Utente
+        bio,        // Biografia Utente
     };
 
     await controller.update(id, data)
@@ -399,6 +422,7 @@ router.put("/me", auth, async (req, res, next) => {
             throw error;
         });
 
+    // Restituisco l'Utente
     const response = await controller.getOne(id)
         .catch(error => {
             throw error;
@@ -417,8 +441,9 @@ router.put("/me", auth, async (req, res, next) => {
  * Delete Me
  */
 router.delete("/me", auth, async (req, res, next) => {
-    const id = res.locals.payload.username;
+    const id = res.locals.payload.username; // Username Utente
 
+    // Controllo se l'Utente Esiste
     const response = controller.getOne(id)
         .catch(error => {
             throw error;
@@ -434,6 +459,7 @@ router.delete("/me", auth, async (req, res, next) => {
         throw error;
     }
 
+    // Elimino l'Utente
     await controller.remove(id)
         .catch(error => {
             throw error;

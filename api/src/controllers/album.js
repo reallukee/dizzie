@@ -6,10 +6,12 @@
  * https://github.com/reallukee/dizzie
  *
  * Author       : Luca Pollicino
- * Descrizione  : ARTIST
- *                Metodi per la Gestione della Risorsa 'Artist'
+ *                (https://github.com/reallukee)
+ * Descrizione  : ALBUM
+ *                Metodi per la Gestione della Risorsa 'Album'
  *                e delle Risorse a Esso Collegate
  * License      : MIT
+ *                (https://opensource.org/license/mit)
  * Versione     : 1.0.0
  */
 
@@ -18,9 +20,9 @@ const db = require("../db");            // Database
 const api = require("../api");          // API
 
 /**
- * Get All Requests
+ * Get All Albums
  * @param {object} req Request
- * @returns All Artists
+ * @returns All Albums
  */
 const getAll = async (req) => {
     const name = req.query.name || "";
@@ -37,9 +39,9 @@ const getAll = async (req) => {
                 'url', s.url,
                 'endpoint', CONCAT('${api.baseUrl(req)}/services/', s.name)
             ) AS service,
-            CONCAT('${api.baseUrl(req)}/artists/', a.id) AS endpoint
+            CONCAT('${api.baseUrl(req)}/albums/', a.id) AS endpoint
         FROM
-            artist a
+            album a
         JOIN
             service s ON s.name=a.service
         WHERE
@@ -50,7 +52,7 @@ const getAll = async (req) => {
         OFFSET ?`;
 
     const params = [
-        `%${name}%`,    // Filtro Nome Artista
+        `%${name}%`,    // Filtro Nome Album
         `%${service}%`, // Filtro Nome Servizio
         limit,          // Limit
         offset,         // Offset
@@ -69,10 +71,10 @@ const getAll = async (req) => {
 };
 
 /**
- * Get One Artist
- * @param {string} id Artist Id
+ * Get One Album
+ * @param {string} id Album Id
  * @param {object} req Request
- * @returns One Artist
+ * @returns One Album
  */
 const getOne = async (id, req) => {
     const sql =
@@ -85,14 +87,14 @@ const getOne = async (id, req) => {
                 'endpoint', CONCAT('${api.baseUrl(req)}/services/', s.name)
             ) AS service
         FROM
-            artist a
+            album a
         JOIN
             service s ON s.name=a.service
         WHERE
             a.id=?`;
 
     const params = [
-        id, // Id Artista
+        id, // Id Album
     ];
 
     const result = await db.pool.execute(sql, params)
@@ -108,27 +110,27 @@ const getOne = async (id, req) => {
 };
 
 /**
- * Create Artist
- * @param {object} data Artist Data
+ * Create Album
+ * @param {object} data Album Data
  */
 const create = async (data) => {
     const {
-        id,         // Id Artista
-        name,       // Nome Artista
-        url,        // Url Artista
+        id,         // Id Album
+        name,       // Nome Album
+        url,        // Url Album
         service,    // Id Servizio
     } = data;
 
     const sql =
         `INSERT INTO
-            artist
+            album
         VALUES
             (?, ?, ?, DEFAULT, DEFAULT, ?)`;
 
     const params = [
-        id,         // Id Artista
-        name,       // Nome Artista
-        url,        // Url Artista
+        id,         // Id Album
+        name,       // Nome Album
+        url,        // Url Album
         service,    // Id Servizio
     ];
 
@@ -139,19 +141,19 @@ const create = async (data) => {
 };
 
 /**
- * Update Artist
- * @param {string} id Artist Id
- * @param {object} data Artist Data
+ * Update Album
+ * @param {string} id Album Id
+ * @param {object} data Album Data
  */
 const update = async (id, data) => {
     const {
-        name,   // Nome Artista
-        url,    // Url Artista
+        name,   // Nome Album
+        url,    // Url Album
     } = data;
 
     const sql =
         `UPDATE
-            artist a
+            album a
         SET
             a.name=?,
             a.url=?
@@ -159,9 +161,9 @@ const update = async (id, data) => {
             a.id=?`;
 
     const params = [
-        name,   // Nome Artista
-        url,    // Url Artista
-        id,     // Id Artista
+        name,   // Nome Album
+        url,    // Url Album
+        id,     // Id Album
     ];
 
     await db.pool.execute(sql, params)
@@ -171,18 +173,18 @@ const update = async (id, data) => {
 };
 
 /**
- * Remove Artist
- * @param {string} id Artist Id
+ * Remove Album
+ * @param {string} id Album Id
  */
 const remove = async (id) => {
     const sql =
         `DELETE FROM
-            artist a
+            album a
         WHERE
             a.id=?`;
 
     const params = [
-        id, // Id Artista
+        id, // Album Id
     ];
 
     await db.pool.execute(sql, params)

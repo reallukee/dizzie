@@ -6,10 +6,12 @@
  * https://github.com/reallukee/dizzie
  *
  * Author       : Luca Pollicino
+ *                (https://github.com/reallukee)
  * Descrizione  : SERVICE
  *                Metodi per la Gestione della Risorsa 'Service'
  *                e delle Risorse a Esso Collegate
  * License      : MIT
+ *                (https://opensource.org/license/mit)
  * Versione     : 1.0.0
  */
 
